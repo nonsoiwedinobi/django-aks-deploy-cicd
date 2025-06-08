@@ -32,10 +32,14 @@ jobs:
     - name: Set AKS context
       uses: azure/aks-set-context@v3
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-        cluster-name: <django-cluster>
-        resource-group: <devops-rg>
+        cluster-name: django-cluster
+        resource-group: devops-rg
+        subscription: f4b37f4c-d63d-4db8-93ec-44e89abe0633
 
-    - name: Deploy to AKS
+    - name: Apply Kubernetes manifests
+      run: |
+        kubectl apply -f k8s/
+
+    - name: Update Deployment image
       run: |
         kubectl set image deployment/django-app django=mydjangoacr232.azurecr.io/django-app:${{ github.sha }}
