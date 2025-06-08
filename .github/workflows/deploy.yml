@@ -43,3 +43,4 @@ jobs:
     - name: Update Deployment image
       run: |
         kubectl set image deployment/django-app django=mydjangoacr232.azurecr.io/django-app:${{ github.sha }}
+        
