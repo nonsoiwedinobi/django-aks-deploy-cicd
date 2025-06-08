@@ -1,0 +1,41 @@
+name: CI/CD to AKS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Docker login to ACR
+      run: |
+        az acr login --name mydjangoacr232
+
+    - name: Build and push image
+      run: |
+        docker build -t mydjangoacr232.azurecr.io/django-app:${{ github.sha }} .
+        docker push mydjangoacr232.azurecr.io/django-app:${{ github.sha }}
+
+    - name: Set AKS context
+      uses: azure/aks-set-context@v3
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        cluster-name: <your-aks-cluster-name>
+        resource-group: <your-resource-group-name>
+
+    - name: Deploy to AKS
+      run: |
+        kubectl set image deployment/django-app django=mydjangoacr232.azurecr.io/django-app:${{ github.sha }}
