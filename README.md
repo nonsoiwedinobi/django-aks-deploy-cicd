@@ -1,45 +1,87 @@
-# Python Getting Started
+# Django App Deployment to Azure Kubernetes Service (AKS) with CI/CD 
 
-A barebones Django app, which can easily be deployed to Heroku.
+This project demonstrates how to containerize a Django web application and deploy it to Azure Kubernetes Service (AKS) using GitHub Actions for a full CI/CD pipeline.
 
-This application supports the tutorials for both the [Cedar and Fir generations](https://devcenter.heroku.com/articles/generations) of the Heroku platform. You can check them out here:
+---
 
-- [Getting Started on Heroku with Python](https://devcenter.heroku.com/articles/getting-started-with-python)
-- [Getting Started on Heroku Fir with Python](https://devcenter.heroku.com/articles/getting-started-with-python-fir)
+## Stack Used
 
-## Deploying to Heroku
+- **Django** 5.2 (Web Framework)
+- **Docker** (Containerization)
+- **Azure Container Registry (ACR)** (Image Storage)
+- **Azure Kubernetes Service (AKS)** (Orchestration)
+- **GitHub Actions** (CI/CD Pipeline)
+- **Whitenoise** (Static file management)
+- **Gunicorn** (Production server)
 
-Using resources for this example app counts towards your usage. [Delete your app](https://devcenter.heroku.com/articles/heroku-cli-commands#heroku-apps-destroy) and [database](https://devcenter.heroku.com/articles/heroku-postgresql#removing-the-add-on) as soon as you are done experimenting to control costs.
+---
 
-### Deploy on Heroku [Cedar](https://devcenter.heroku.com/articles/generations#cedar)
+## Key Features
 
-By default, apps use Eco dynos if you are subscribed to Eco. Otherwise, it defaults to Basic dynos. The Eco dynos plan is shared across all Eco dynos in your account and is recommended if you plan on deploying many small apps to Heroku. Learn more about our low-cost plans [here](https://blog.heroku.com/new-low-cost-plans).
+- Clean and production-ready Dockerfile
+- Kubernetes manifests (`deployment.yaml`, `service.yaml`)
+- CI/CD workflow via GitHub Actions
+- Automatically builds, pushes to ACR, and deploys to AKS on every `main` branch push
+- Exposes app to public via LoadBalancer service
 
-Eligible students can apply for platform credits through our new [Heroku for GitHub Students program](https://blog.heroku.com/github-student-developer-program).
+---
 
-```term
-$ git clone https://github.com/heroku/python-getting-started
-$ cd python-getting-started
-$ heroku create
-$ git push heroku main
-$ heroku open
-```
+---
 
-### Deploy on Heroku [Fir](https://devcenter.heroku.com/articles/generations#fir)
+## Deployment Screenshots
 
-By default, apps on [Fir](https://devcenter.heroku.com/articles/generations#fir) use 1X-Classic dynos. To create an app on [Fir](https://devcenter.heroku.com/articles/generations#fir) you'll need to
-[create a private space](https://devcenter.heroku.com/articles/working-with-private-spaces#create-a-private-space)
-first.
+Here’s a step-by-step visual guide to the deployment process:
 
-```term
-$ git clone https://github.com/heroku/python-getting-started
-$ cd python-getting-started
-$ heroku create --space <space-name>
-$ git push heroku main
-$ heroku ps:wait
-$ heroku open
-```
+### 1. Dockerizing the Django App
+> Created a `Dockerfile` and ran it locally to ensure the app worked in a container.
 
-For more information about using Python on Heroku, see these Dev Center articles:
+![alt text](<Screenshot 2025-06-08 134349.png>)
 
-- [Python on Heroku](https://devcenter.heroku.com/categories/python)
+### 2. Running Locally with Docker
+> Built and ran the container on port 5000.
+
+![alt text](<Screenshot 2025-06-08 134614.png>)
+
+![alt text](<Screenshot 2025-06-08 135623.png>)
+
+### 3. Creating Azure Resource Group
+> Using Azure CLI to organize resources.
+
+![alt text](<Screenshot 2025-06-08 140252.png>)
+
+### 4. Creating Azure Container Registry (ACR)
+> Used `az acr create` to store Docker images.
+
+[alt text](<Screenshot 2025-06-08 142549.png>)
+
+![alt text](<Screenshot 2025-06-08 142744.png>)
+
+### 5. Pushing Image to ACR
+> Tagged and pushed Docker image to the container registry.
+
+![alt text](<Screenshot 2025-06-08 150548.png>)
+
+![alt text](<Screenshot 2025-06-08 150915.png>)
+
+### 6. Kubernetes Deployment & Service
+> Deployed to AKS using YAML manifests.
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](<Screenshot 2025-06-08 160348.png>)
+
+### 7. GitHub Actions CI/CD Pipeline
+> Pushed code to `main` and watched GitHub deploy automatically to AKS.
+
+![alt text](image-2.png)
+
+### 8. App Live on External IP
+> Final app served on AKS LoadBalancer external IP.
+
+![alt text](<Screenshot 2025-06-08 165450.png>)
+
+---
+
+
